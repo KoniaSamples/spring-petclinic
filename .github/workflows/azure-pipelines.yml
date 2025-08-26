@@ -15,6 +15,9 @@ parameters:
       - 'Maven'
       - 'Gradle'
 
+variables:
+  imageName: 'api-petclinic'
+
 stages:
   - stage: Build
     displayName: "Build Java App"
@@ -35,7 +38,7 @@ stages:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: 'api-koniasample'
+          imageName: $(imageName)
           tag: $(Build.BuildId)
           artifactName: 'drop'
           
@@ -47,6 +50,7 @@ stages:
         parameters:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployQA
     displayName: "Deploy to QA"
@@ -56,6 +60,7 @@ stages:
         parameters:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployHML
     displayName: "Deploy to HML"
@@ -65,6 +70,7 @@ stages:
         parameters:
           environmentName: 'HML'
           imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployProd
     displayName: "Deploy to PROD"
@@ -74,3 +80,4 @@ stages:
         parameters:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
+          imageName: $(imageName)

@@ -52,6 +52,14 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
+      - template: import-apim-template.yml@templatesRepo
+        parameters:
+          environmentName: 'DEV'
+          apiName: 'koniasample-api'
+          apiPath: 'koniasample'
+          apiSpecFile: 'openapi/dev-koniasample.json'
+          apimInstance: 'apim-koniasamples'
+
   - stage: DeployQA
     displayName: "Deploy to QA"
     dependsOn: DeployDev
@@ -61,6 +69,14 @@ stages:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+
+      - template: import-apim-template.yml@templatesRepo
+        parameters:
+          environmentName: 'QA'
+          apiName: 'koniasample-api'
+          apiPath: 'koniasample'
+          apiSpecFile: 'openapi/dev-koniasample.json'
+          apimInstance: 'apim-koniasamples-qa'
 
   - stage: DeployHML
     displayName: "Deploy to HML"
@@ -72,6 +88,14 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
+      - template: import-apim-template.yml@templatesRepo
+        parameters:
+          environmentName: 'QA'
+          apiName: 'koniasample-api'
+          apiPath: 'koniasample'
+          apiSpecFile: 'openapi/dev-koniasample.json'
+          apimInstance: 'apim-koniasamples-hml'
+
   - stage: DeployProd
     displayName: "Deploy to PROD"
     dependsOn: DeployHML
@@ -81,3 +105,11 @@ stages:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+
+      - template: import-apim-template.yml@templatesRepo
+        parameters:
+          environmentName: 'QA'
+          apiName: 'koniasample-api'
+          apiPath: 'koniasample'
+          apiSpecFile: 'openapi/dev-koniasample.json'
+          apimInstance: 'apim-koniasamples-prd'

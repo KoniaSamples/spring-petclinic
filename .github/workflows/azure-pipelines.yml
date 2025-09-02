@@ -4,6 +4,11 @@ resources:
       type: git
       name: PipelineSamplesTemplates/templates-apim
       ref: refs/heads/main
+    
+    - repository: templatesInfra
+      type: git
+      name: PipelineSamplesTemplates/infra
+      ref: refs/heads/main
 
 trigger: none
 
@@ -52,7 +57,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesRepo
+      - template: import-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'DEV'
           apiName: 'koniasample-api'
@@ -70,7 +75,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesRepo
+      - template: import-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'QA'
           apiName: 'koniasample-api'
@@ -88,9 +93,9 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesRepo
+      - template: import-apim-template.yml@templatesInfra
         parameters:
-          environmentName: 'QA'
+          environmentName: 'HML'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
           apiSpecFile: 'openapi/dev-koniasample.json'
@@ -106,9 +111,9 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesRepo
+      - template: import-apim-template.yml@templatesInfra
         parameters:
-          environmentName: 'QA'
+          environmentName: 'PRD'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
           apiSpecFile: 'openapi/dev-koniasample.json'

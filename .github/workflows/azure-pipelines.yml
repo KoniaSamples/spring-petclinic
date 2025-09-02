@@ -16,7 +16,7 @@ parameters:
       - 'Gradle'
 
 variables:
-  imageName: 'api-petclinic'
+  imageName: 'api-teste'
 
 stages:
   - stage: Build

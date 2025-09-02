@@ -23,12 +23,11 @@ stages:
     displayName: "Build Java App"
     jobs:
       - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
-          template: build-gradle-template.yml@templatesRepo
+        - template: build-gradle-template.yml@templatesRepo
           parameters:
             buildConfiguration: 'Release'
-
       - ${{ if eq(parameters.BuildTool, 'Maven') }}:
-          template: build-maven-template.yml@templatesRepo
+        - template: build-maven-template.yml@templatesRepo
           parameters:
             buildConfiguration: 'Release'
 

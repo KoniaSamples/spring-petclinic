@@ -12,8 +12,8 @@ parameters:
     type: string
     default: 'Gradle'
     values:
-      - 'Maven'
       - 'Gradle'
+      - 'Maven'
 
 variables:
   imageName: 'api-teste'
@@ -46,66 +46,38 @@ stages:
     displayName: "Deploy to DEV"
     dependsOn: Docker
     jobs:
-      - deployment: DeployToDev
-        displayName: "Deploy app to DEV"
-        environment: DEV
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: deploy-aca-template.yml@templatesRepo
-                  parameters:
-                    environmentName: 'DEV'
-                    imageTag: $(Build.BuildId)
-                    imageName: $(imageName)
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'DEV'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployQA
     displayName: "Deploy to QA"
     dependsOn: DeployDev
     jobs:
-      - deployment: DeployToQA
-        displayName: "Deploy app to QA"
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: deploy-aca-template.yml@templatesRepo
-                  parameters:
-                    environmentName: 'QA'
-                    imageTag: $(Build.BuildId)
-                    imageName: $(imageName)
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'QA'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployHML
     displayName: "Deploy to HML"
     dependsOn: DeployQA
     jobs:
-      - deployment: DeployToHML
-        displayName: "Deploy app to HML"
-        environment: HML
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: deploy-aca-template.yml@templatesRepo
-                  parameters:
-                    environmentName: 'HML'
-                    imageTag: $(Build.BuildId)
-                    imageName: $(imageName)
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'HML'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
 
   - stage: DeployProd
     displayName: "Deploy to PROD"
     dependsOn: DeployHML
     jobs:
-      - deployment: DeployToPRD
-        displayName: "Deploy app to PROD"
-        environment: PRD
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: deploy-aca-template.yml@templatesRepo
-                  parameters:
-                    environmentName: 'PRD'
-                    imageTag: $(Build.BuildId)
-                    imageName: $(imageName)
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'PRD'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)

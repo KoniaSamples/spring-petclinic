@@ -16,7 +16,7 @@ parameters:
       - 'Gradle'
 
 variables:
-  imageName: 'koniasample'
+  imageName: 'api-teste'
 
 stages:
   - stage: Build

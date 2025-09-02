@@ -23,11 +23,12 @@ stages:
     displayName: "Build Java App"
     jobs:
       - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
-        - template: build-gradle-template.yml@templatesRepo
+          template: build-gradle-template.yml@templatesRepo
           parameters:
             buildConfiguration: 'Release'
+
       - ${{ if eq(parameters.BuildTool, 'Maven') }}:
-        - template: build-maven-template.yml@templatesRepo
+          template: build-maven-template.yml@templatesRepo
           parameters:
             buildConfiguration: 'Release'
 
@@ -41,7 +42,7 @@ stages:
           imageName: $(imageName)
           tag: $(Build.BuildId)
           artifactName: 'drop'
-          
+
   - stage: DeployDev
     displayName: "Deploy to DEV"
     dependsOn: Docker
@@ -58,7 +59,7 @@ stages:
                     environmentName: 'DEV'
                     imageTag: $(Build.BuildId)
                     imageName: $(imageName)
-  
+
   - stage: DeployQA
     displayName: "Deploy to QA"
     dependsOn: DeployDev
@@ -75,7 +76,7 @@ stages:
                     environmentName: 'QA'
                     imageTag: $(Build.BuildId)
                     imageName: $(imageName)
-  
+
   - stage: DeployHML
     displayName: "Deploy to HML"
     dependsOn: DeployQA
@@ -92,7 +93,7 @@ stages:
                     environmentName: 'HML'
                     imageTag: $(Build.BuildId)
                     imageName: $(imageName)
-  
+
   - stage: DeployProd
     displayName: "Deploy to PROD"
     dependsOn: DeployHML

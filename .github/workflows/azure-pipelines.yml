@@ -57,7 +57,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesInfra
+      - template: development/deploy-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'DEV'
           apiName: 'koniasample-api'
@@ -75,7 +75,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesInfra
+      - template: development/deploy-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'QA'
           apiName: 'koniasample-api'
@@ -93,7 +93,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesInfra
+      - template: development/deploy-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'HML'
           apiName: 'koniasample-api'
@@ -111,7 +111,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: import-apim-template.yml@templatesInfra
+      - template: development/deploy-apim-template.yml@templatesInfra
         parameters:
           environmentName: 'PRD'
           apiName: 'koniasample-api'

@@ -62,7 +62,7 @@ stages:
           environmentName: 'DEV'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
-          apiSpecFile: 'openapi/dev-koniasample.json'
+          apiSpecPath: 'openapi/dev-koniasample.json'
           apimInstance: 'apim-koniasamples'
 
   - stage: DeployQA
@@ -80,7 +80,7 @@ stages:
           environmentName: 'QA'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
-          apiSpecFile: 'openapi/dev-koniasample.json'
+          apiSpecPath: 'openapi/dev-koniasample.json'
           apimInstance: 'apim-koniasamples-qa'
 
   - stage: DeployHML
@@ -98,7 +98,7 @@ stages:
           environmentName: 'HML'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
-          apiSpecFile: 'openapi/dev-koniasample.json'
+          apiSpecPath: 'openapi/dev-koniasample.json'
           apimInstance: 'apim-koniasamples-hml'
 
   - stage: DeployProd
@@ -116,5 +116,5 @@ stages:
           environmentName: 'PRD'
           apiName: 'koniasample-api'
           apiPath: 'koniasample'
-          apiSpecFile: 'openapi/dev-koniasample.json'
+          apiSpecPath: 'openapi/dev-koniasample.json'
           apimInstance: 'apim-koniasamples-prd'

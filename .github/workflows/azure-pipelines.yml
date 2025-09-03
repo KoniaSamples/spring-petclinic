@@ -57,13 +57,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: development/deploy-apim-template.yml@templatesInfra
-        parameters:
-          environmentName: 'DEV'
-          apiName: 'koniasample-api'
-          apiPath: 'koniasample'
-          apiSpecPath: 'openapi/dev-koniasample.json'
-          apimInstance: 'apim-koniasamples'
+      
 
   - stage: DeployQA
     displayName: "Deploy to QA"
@@ -75,13 +69,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: development/deploy-apim-template.yml@templatesInfra
-        parameters:
-          environmentName: 'QA'
-          apiName: 'koniasample-api'
-          apiPath: 'koniasample'
-          apiSpecPath: 'openapi/dev-koniasample.json'
-          apimInstance: 'apim-koniasamples-qa'
+     
 
   - stage: DeployHML
     displayName: "Deploy to HML"
@@ -93,13 +81,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: development/deploy-apim-template.yml@templatesInfra
-        parameters:
-          environmentName: 'HML'
-          apiName: 'koniasample-api'
-          apiPath: 'koniasample'
-          apiSpecPath: 'openapi/dev-koniasample.json'
-          apimInstance: 'apim-koniasamples-hml'
+      
 
   - stage: DeployProd
     displayName: "Deploy to PROD"
@@ -111,10 +93,4 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      - template: development/deploy-apim-template.yml@templatesInfra
-        parameters:
-          environmentName: 'PRD'
-          apiName: 'koniasample-api'
-          apiPath: 'koniasample'
-          apiSpecPath: 'openapi/dev-koniasample.json'
-          apimInstance: 'apim-koniasamples-prd'
+      

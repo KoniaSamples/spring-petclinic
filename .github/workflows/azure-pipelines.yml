@@ -44,7 +44,7 @@ stages:
     displayName: "Build Java App"
     jobs:
       - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
-        - template: development/api/java/build-gradle-template.yml@templatesRepo
+        - template: build-gradle-template.yml@templatesRepo
           parameters:
             pool: ${{ parameters.pool }}
             ApplicationName: ${{ parameters.ApplicationName }}
@@ -60,7 +60,7 @@ stages:
     displayName: "Build Docker Image and Push to ACR"
     dependsOn: Build
     jobs:
-      - template: development/api/docker/docker-build-template.yml@templatesRepo
+      - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
           imageName: $(imageName)
@@ -71,7 +71,7 @@ stages:
     displayName: "Deploy to DEV"
     dependsOn: Docker
     jobs:
-      - template: development/api/deploy/deploy-aca-template.yml@templatesRepo
+      - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
@@ -83,7 +83,7 @@ stages:
     displayName: "Deploy to QA"
     dependsOn: DeployDev
     jobs:
-      - template: development/api/deploy/deploy-aca-template.yml@templatesRepo
+      - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
@@ -95,7 +95,7 @@ stages:
     displayName: "Deploy to HML"
     dependsOn: DeployQA
     jobs:
-      - template: development/api/deploy/deploy-aca-template.yml@templatesRepo
+      - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'HML'
           imageTag: $(Build.BuildId)
@@ -107,7 +107,7 @@ stages:
     displayName: "Deploy to PROD"
     dependsOn: DeployHML
     jobs:
-      - template: development/api/deploy/deploy-aca-template.yml@templatesRepo
+      - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)

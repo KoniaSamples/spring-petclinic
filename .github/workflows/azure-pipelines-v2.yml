@@ -1,0 +1,99 @@
+resources:
+  repositories:
+    - repository: templatesRepo
+      type: git
+      name: PipelineSamplesTemplates/templates-apim
+      ref: refs/heads/main
+
+trigger: none
+
+parameters:
+  - name: BuildTool
+    type: string
+    default: 'Gradle'
+    values:
+      - 'Gradle'
+      - 'Maven'
+
+variables:
+  imageName: 'koniasample'
+
+stages:
+  - stage: Build
+    displayName: "Build Java App"
+    jobs:
+      - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
+        - template: build-gradle-template.yml@templatesRepo
+          parameters:
+            VmImage: 'ubuntu-latest' # Imagem da máquina virtual utilizada pelo agent pool, Como padrão utilizamos o ubuntu-latest
+            ContentPath: '$(System.DefaultWorkingDirectory)' # Caminho para os arquivos que serão copiados para a pasta do pacote que será gerado.
+            ArtifactName: 'drop' # Nome do artefato a ser gerado
+            SonarConnection: '' # Nome da Service Connection do Sonaqube
+            SonarProjectKey: '' # ProjectKey do projeto no Sonarqube
+            SonarProjectName: '' # ProjectName do projeto no Sonarqube
+            System.Debug: 'true' # Exibindo logs mais detalhados da execução 
+            System.TeamProject: '$(System.TeamProject)' # Nome do projeto onde esta a pipeline
+            ApplicationName: '$(Build.Repository.Name)' # Nome da aplicação, será usado para nomear a pasta do pacote gerado no build
+      - ${{ if eq(parameters.BuildTool, 'Maven') }}:
+        - template: build-maven-template.yml@templatesRepo
+          parameters:
+            buildConfiguration: 'Release'
+
+  - stage: Docker
+    displayName: "Build Docker Image and Push to ACR"
+    dependsOn: Build
+    jobs:
+      - template: docker-build-template.yml@templatesRepo
+        parameters:
+          registryName: 'acrkoniasamples.azurecr.io'
+          imageName: $(imageName)
+          tag: $(Build.BuildId)
+          artifactName: 'drop'
+
+  - stage: DEV
+    displayName: "Deploy to DEV"
+    dependsOn: Docker
+    jobs:
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'DEV'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
+
+      
+
+  - stage: QA
+    displayName: "Deploy to QA"
+    dependsOn: DeployDev
+    jobs:
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'QA'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
+
+     
+
+  - stage: HML
+    displayName: "Deploy to HML"
+    dependsOn: DeployQA
+    jobs:
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'HML'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
+
+      
+
+  - stage: PRD
+    displayName: "Deploy to PROD"
+    dependsOn: DeployHML
+    jobs:
+      - template: deploy-aca-template.yml@templatesRepo
+        parameters:
+          environmentName: 'PRD'
+          imageTag: $(Build.BuildId)
+          imageName: $(imageName)
+
+      

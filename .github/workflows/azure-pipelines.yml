@@ -2,7 +2,7 @@ resources:
   repositories:
     - repository: templatesRepo
       type: git
-      name: DevSecOps/AzurePipelinesTemplates
+      name: PipelineSamplesTemplates/templates-apim
       ref: refs/heads/main
     
 trigger: none

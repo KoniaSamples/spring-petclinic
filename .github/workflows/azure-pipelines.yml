@@ -9,7 +9,7 @@ trigger: none
 
 parameters:
   - name: pool
-    type: object
+    type: string
     default: 'ubuntu-latest'
     values:
       - 'ubuntu-latest'

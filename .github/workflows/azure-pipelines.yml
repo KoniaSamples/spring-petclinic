@@ -18,6 +18,9 @@ parameters:
   - name: ApplicationName
     type: string
     default: '$(Build.Repository.Name)'
+  - name: ApiGroup
+    type: string
+    default: 'pagamentos'
   - name: ArtifactName
     type: string
     default: 'drop'
@@ -73,6 +76,7 @@ stages:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+          ApiGroup: '${{ parameters.ApiGroup }}'
       
 
   - stage: DeployQA
@@ -84,6 +88,7 @@ stages:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+          ApiGroup: '${{ parameters.ApiGroup }}'
 
 
   - stage: DeployHML
@@ -95,6 +100,7 @@ stages:
           environmentName: 'HML'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+          ApiGroup: '${{ parameters.ApiGroup }}'
 
 
   - stage: DeployProd
@@ -106,3 +112,4 @@ stages:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
+          ApiGroup: '${{ parameters.ApiGroup }}'

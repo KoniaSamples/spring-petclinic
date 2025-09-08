@@ -13,6 +13,20 @@ resources:
 trigger: none
 
 parameters:
+  - name: Agente
+    type: string
+    default: 'ubuntu-latest'
+    values:
+      - 'ubuntu-latest'
+      - 'ubuntu-22.04'
+      - 'ubuntu-24.04'
+      - 'Konia-Pool'
+  - name: ApplicationName
+    type: string
+    default: '$(Build.Repository.Name)'
+  - name: ArtifactName
+    type: string
+    default: 'drop'
   - name: BuildTool
     type: string
     default: 'Gradle'
@@ -22,6 +36,11 @@ parameters:
 
 variables:
   imageName: 'koniasample'
+  System.TeamProject: '$(System.TeamProject)' # Nome do projeto onde esta a pipeline
+  ContentPath: '$(System.DefaultWorkingDirectory)' # Caminho para os arquivos que serão copiados para a pasta do pacote que será gerado.
+  SonarConnection: '' # Nome da Service Connection do Sonaqube
+  SonarProjectKey: '' # ProjectKey do projeto no Sonarqube
+  SonarProjectName: '' # ProjectName do projeto no Sonarqube
 
 stages:
   - stage: Build
@@ -30,11 +49,15 @@ stages:
       - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
         - template: build-gradle-template.yml@templatesRepo
           parameters:
-            buildConfiguration: 'Release'
+            Agente: ${{ parameters.Agente }}
+            ApplicationName: ${{ parameters.ApplicationName }}
+            ArtifactName: ${{ parameters.ArtifactName }}
       - ${{ if eq(parameters.BuildTool, 'Maven') }}:
         - template: build-maven-template.yml@templatesRepo
           parameters:
-            buildConfiguration: 'Release'
+            Agente: ${{ parameters.Agente }}
+            ApplicationName: ${{ parameters.ApplicationName }}
+            ArtifactName: ${{ parameters.ArtifactName }}
 
   - stage: Docker
     displayName: "Build Docker Image and Push to ACR"

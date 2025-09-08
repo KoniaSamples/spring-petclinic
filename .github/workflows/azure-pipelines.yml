@@ -32,7 +32,7 @@ parameters:
 
 variables:
   imageName: 'koniasample'
-  System.TeamProject: '$(System.TeamProject)' # Nome do projeto onde esta a pipeline
+  # System.TeamProject: '$(System.TeamProject)' # Nome do projeto onde esta a pipeline
   ContentPath: '$(System.DefaultWorkingDirectory)' # Caminho para os arquivos que serão copiados para a pasta do pacote que será gerado.
   SonarConnection: '' # Nome da Service Connection do Sonaqube
   SonarProjectKey: '' # ProjectKey do projeto no Sonarqube

@@ -9,14 +9,14 @@ resources:
 trigger: none
 
 parameters:
-  - name: Agente
-    type: string
-    default: 'ubuntu-latest'
+  - name: pool
+    type: object
+    default: 
+      vmImage: 'ubuntu-latest'
     values:
-      - 'ubuntu-latest'
-      - 'ubuntu-22.04'
-      - 'ubuntu-24.04'
-      - 'Konia-Pool'
+      - vmImage: 'ubuntu-latest'
+      - vmImage: 'ubuntu-24.04'
+      - name: 'Konia-Pool'
   - name: ApplicationName
     type: string
     default: '$(Build.Repository.Name)'
@@ -45,13 +45,13 @@ stages:
       - ${{ if eq(parameters.BuildTool, 'Gradle') }}:
         - template: development/api/java/build-gradle-template.yml@templatesRepo
           parameters:
-            Agente: ${{ parameters.Agente }}
+            pool: ${{ parameters.pool }}
             ApplicationName: ${{ parameters.ApplicationName }}
             ArtifactName: ${{ parameters.ArtifactName }}
       - ${{ if eq(parameters.BuildTool, 'Maven') }}:
         - template: development/api/java/build-maven-template.yml@templatesRepo
           parameters:
-            Agente: ${{ parameters.Agente }}
+            pool: ${{ parameters.pool }}
             ApplicationName: ${{ parameters.ApplicationName }}
             ArtifactName: ${{ parameters.ArtifactName }}
 

@@ -5,18 +5,16 @@ resources:
       name: DevSecOps/AzurePipelinesTemplates
       ref: refs/heads/main
     
-
 trigger: none
 
 parameters:
   - name: pool
     type: object
-    default: 
-      vmImage: 'ubuntu-latest'
+    default: 'ubuntu-latest'
     values:
-      - vmImage: 'ubuntu-latest'
-      - vmImage: 'ubuntu-24.04'
-      - name: 'Konia-Pool'
+      - 'ubuntu-latest'
+      - 'ubuntu-24.04'
+      - 'Konia-Pool'
   - name: ApplicationName
     type: string
     default: '$(Build.Repository.Name)'
@@ -75,7 +73,6 @@ stages:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
-
       
 
   - stage: DeployQA
@@ -88,7 +85,6 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-     
 
   - stage: DeployHML
     displayName: "Deploy to HML"
@@ -100,7 +96,6 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
 
-      
 
   - stage: DeployProd
     displayName: "Deploy to PROD"
@@ -111,5 +106,3 @@ stages:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
           imageName: $(imageName)
-
-      

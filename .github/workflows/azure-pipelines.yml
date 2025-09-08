@@ -56,60 +56,70 @@ stages:
             ApplicationName: ${{ parameters.ApplicationName }}
             ArtifactName: ${{ parameters.ArtifactName }}
 
-  - stage: Docker
-    displayName: "Build Docker Image and Push to ACR"
+  - stage: DeployDev
+    displayName: "Build & Deploy DEV"
     dependsOn: Build
     jobs:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: $(imageName)
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
           tag: $(Build.BuildId)
           artifactName: 'drop'
-
-  - stage: DeployDev
-    displayName: "Deploy to DEV"
-    dependsOn: Docker
-    jobs:
       - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
-          imageName: $(imageName)
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
           ApiGroup: '${{ parameters.ApiGroup }}'
-      
 
   - stage: DeployQA
-    displayName: "Deploy to QA"
+    displayName: "Build & Deploy QA"
     dependsOn: DeployDev
     jobs:
+      - template: docker-build-template.yml@templatesRepo
+        parameters:
+          registryName: 'acrkoniasamples.azurecr.io'
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+          tag: $(Build.BuildId)
+          artifactName: 'drop'
       - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
-          imageName: $(imageName)
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
           ApiGroup: '${{ parameters.ApiGroup }}'
 
-
   - stage: DeployHML
-    displayName: "Deploy to HML"
+    displayName: "Build & Deploy HML"
     dependsOn: DeployQA
     jobs:
+      - template: docker-build-template.yml@templatesRepo
+        parameters:
+          registryName: 'acrkoniasamples.azurecr.io'
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
+          tag: $(Build.BuildId)
+          artifactName: 'drop'
       - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'HML'
           imageTag: $(Build.BuildId)
-          imageName: $(imageName)
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
           ApiGroup: '${{ parameters.ApiGroup }}'
 
-
   - stage: DeployProd
-    displayName: "Deploy to PROD"
+    displayName: "Build & Deploy PROD"
     dependsOn: DeployHML
     jobs:
+      - template: docker-build-template.yml@templatesRepo
+        parameters:
+          registryName: 'acrkoniasamples.azurecr.io'
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
+          tag: $(Build.BuildId)
+          artifactName: 'drop'
       - template: deploy-aca-template.yml@templatesRepo
         parameters:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
-          imageName: $(imageName)
+          imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
           ApiGroup: '${{ parameters.ApiGroup }}'

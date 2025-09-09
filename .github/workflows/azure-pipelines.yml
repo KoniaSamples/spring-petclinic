@@ -68,6 +68,7 @@ stages:
           imageName: "$(baseImageName)-dev"
           tag: $(Build.BuildId)
           artifactName: 'drop'
+          ApplicationName: '${{ parameters.ApplicationName }}'
 
       - template: deploy-aca-template.yml@templatesRepo
         parameters:

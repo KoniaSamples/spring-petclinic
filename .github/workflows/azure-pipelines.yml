@@ -75,6 +75,7 @@ stages:
           imageTag: $(Build.BuildId)
           imageName: "$(baseImageName)-dev"
           ApiGroup: '${{ parameters.ApiGroup }}'
+          ApplicationName: '${{ parameters.ApplicationName }}'
 
   # -----------------------------
   # Deploy QA

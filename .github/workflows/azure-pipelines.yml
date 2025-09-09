@@ -60,7 +60,7 @@ stages:
     displayName: "Build & Deploy DEV"
     dependsOn: Build
     jobs:
-      job: BuildDockerDev
+      - job: BuildDockerDev
       displayName: 'Build and Push Docker Image to ACR'
       steps:
         - template: docker-build-template.yml@templatesRepo
@@ -70,7 +70,7 @@ stages:
             tag: $(Build.BuildId)
             artifactName: 'drop'
 
-      job: DeployToDev
+      - job: DeployToDev
       displayName: 'Deploy to DEV Environment'
       dependsOn: BuildDockerDev
       steps:
@@ -85,7 +85,7 @@ stages:
     displayName: "Build & Deploy QA"
     dependsOn: DeployDev
     jobs:
-      job: BuildDockerQA
+      - job: BuildDockerQA
       displayName: 'Build and Push Docker Image to ACR'
       steps:
         - template: docker-build-template.yml@templatesRepo
@@ -95,22 +95,22 @@ stages:
             tag: $(Build.BuildId)
             artifactName: 'drop'
 
-      job: DeployToQA
+      - job: DeployToQA
       displayName: 'Deploy to QA Environment'
       dependsOn: BuildDockerQA
       steps:
         - template: deploy-aca-template.yml@templatesRepo
-            parameters:
-              environmentName: 'QA'
-              imageTag: $(Build.BuildId)
-              imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
-              ApiGroup: '${{ parameters.ApiGroup }}'
+          parameters:
+            environmentName: 'QA'
+            imageTag: $(Build.BuildId)
+            imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+            ApiGroup: '${{ parameters.ApiGroup }}'
 
   - stage: DeployHML
     displayName: "Build & Deploy HML"
     dependsOn: DeployQA
     jobs:
-      job: BuildDockerHML
+      - job: BuildDockerHML
       displayName: 'Build and Push Docker Image to ACR'
       steps:
         - template: docker-build-template.yml@templatesRepo
@@ -119,7 +119,7 @@ stages:
             imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
             tag: $(Build.BuildId)
             artifactName: 'drop'
-      job: DeployToHML
+      - job: DeployToHML
       displayName: 'Deploy to HML Environment'
       steps:
         - template: deploy-aca-template.yml@templatesRepo
@@ -133,7 +133,7 @@ stages:
     displayName: "Build & Deploy PROD"
     dependsOn: DeployHML
     jobs:
-      jobs: BuildDockerPRD
+      - job: BuildDockerPRD
       displayName: 'Build and Push Docker Image to ACR'
       steps:
         - template: docker-build-template.yml@templatesRepo
@@ -142,7 +142,8 @@ stages:
             imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
             tag: $(Build.BuildId)
             artifactName: 'drop'
-      job: DeployToPRD
+            
+      - job: DeployToPRD
       displayName: 'Deploy to PROD Environment'
       steps:
         - template: deploy-aca-template.yml@templatesRepo

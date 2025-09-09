@@ -61,94 +61,97 @@ stages:
     dependsOn: Build
     jobs:
       - job: BuildDockerDev
-      displayName: 'Build and Push Docker Image to ACR'
-      steps:
-        - template: docker-build-template.yml@templatesRepo
-          parameters:
-            registryName: 'acrkoniasamples.azurecr.io'
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
-            tag: $(Build.BuildId)
-            artifactName: 'drop'
+        displayName: 'Build and Push Docker Image to ACR'
+        steps:
+          - template: docker-build-template.yml@templatesRepo
+            parameters:
+              registryName: 'acrkoniasamples.azurecr.io'
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
+              tag: $(Build.BuildId)
+              artifactName: 'drop'
 
       - job: DeployToDev
-      displayName: 'Deploy to DEV Environment'
-      dependsOn: BuildDockerDev
-      steps:
-        - template: deploy-aca-template.yml@templatesRepo
-          parameters:
-            environmentName: 'DEV'
-            imageTag: $(Build.BuildId)
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
-            ApiGroup: '${{ parameters.ApiGroup }}'
+        displayName: 'Deploy to DEV Environment'
+        dependsOn: BuildDockerDev
+        steps:
+          - template: deploy-aca-template.yml@templatesRepo
+            parameters:
+              environmentName: 'DEV'
+              imageTag: $(Build.BuildId)
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
+              ApiGroup: '${{ parameters.ApiGroup }}'
 
   - stage: DeployQA
     displayName: "Build & Deploy QA"
     dependsOn: DeployDev
     jobs:
       - job: BuildDockerQA
-      displayName: 'Build and Push Docker Image to ACR'
-      steps:
-        - template: docker-build-template.yml@templatesRepo
-          parameters:
-            registryName: 'acrkoniasamples.azurecr.io'
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
-            tag: $(Build.BuildId)
-            artifactName: 'drop'
+        displayName: 'Build and Push Docker Image to ACR'
+        steps:
+          - template: docker-build-template.yml@templatesRepo
+            parameters:
+              registryName: 'acrkoniasamples.azurecr.io'
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+              tag: $(Build.BuildId)
+              artifactName: 'drop'
 
       - job: DeployToQA
-      displayName: 'Deploy to QA Environment'
-      dependsOn: BuildDockerQA
-      steps:
-        - template: deploy-aca-template.yml@templatesRepo
-          parameters:
-            environmentName: 'QA'
-            imageTag: $(Build.BuildId)
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
-            ApiGroup: '${{ parameters.ApiGroup }}'
+        displayName: 'Deploy to QA Environment'
+        dependsOn: BuildDockerQA
+        steps:
+          - template: deploy-aca-template.yml@templatesRepo
+            parameters:
+              environmentName: 'QA'
+              imageTag: $(Build.BuildId)
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+              ApiGroup: '${{ parameters.ApiGroup }}'
 
   - stage: DeployHML
     displayName: "Build & Deploy HML"
     dependsOn: DeployQA
     jobs:
       - job: BuildDockerHML
-      displayName: 'Build and Push Docker Image to ACR'
-      steps:
-        - template: docker-build-template.yml@templatesRepo
-          parameters:
-            registryName: 'acrkoniasamples.azurecr.io'
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
-            tag: $(Build.BuildId)
-            artifactName: 'drop'
+        displayName: 'Build and Push Docker Image to ACR'
+        steps:
+          - template: docker-build-template.yml@templatesRepo
+            parameters:
+              registryName: 'acrkoniasamples.azurecr.io'
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
+              tag: $(Build.BuildId)
+              artifactName: 'drop'
+
       - job: DeployToHML
-      displayName: 'Deploy to HML Environment'
-      steps:
-        - template: deploy-aca-template.yml@templatesRepo
-          parameters:
-            environmentName: 'HML'
-            imageTag: $(Build.BuildId)
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
-            ApiGroup: '${{ parameters.ApiGroup }}'
+        displayName: 'Deploy to HML Environment'
+        dependsOn: BuildDockerHML
+        steps:
+          - template: deploy-aca-template.yml@templatesRepo
+            parameters:
+              environmentName: 'HML'
+              imageTag: $(Build.BuildId)
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
+              ApiGroup: '${{ parameters.ApiGroup }}'
 
   - stage: DeployProd
     displayName: "Build & Deploy PROD"
     dependsOn: DeployHML
     jobs:
       - job: BuildDockerPRD
-      displayName: 'Build and Push Docker Image to ACR'
-      steps:
-        - template: docker-build-template.yml@templatesRepo
-          parameters:
-            registryName: 'acrkoniasamples.azurecr.io'
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
-            tag: $(Build.BuildId)
-            artifactName: 'drop'
-            
+        displayName: 'Build and Push Docker Image to ACR'
+        steps:
+          - template: docker-build-template.yml@templatesRepo
+            parameters:
+              registryName: 'acrkoniasamples.azurecr.io'
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
+              tag: $(Build.BuildId)
+              artifactName: 'drop'
+
       - job: DeployToPRD
-      displayName: 'Deploy to PROD Environment'
-      steps:
-        - template: deploy-aca-template.yml@templatesRepo
-          parameters:
-            environmentName: 'PRD'
-            imageTag: $(Build.BuildId)
-            imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
-            ApiGroup: '${{ parameters.ApiGroup }}'
+        displayName: 'Deploy to PROD Environment'
+        dependsOn: BuildDockerPRD
+        steps:
+          - template: deploy-aca-template.yml@templatesRepo
+            parameters:
+              environmentName: 'PRD'
+              imageTag: $(Build.BuildId)
+              imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
+              ApiGroup: '${{ parameters.ApiGroup }}'

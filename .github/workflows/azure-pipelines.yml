@@ -20,7 +20,7 @@ parameters:
     default: '$(Build.Repository.Name)'
   - name: ApiGroup
     type: string
-    default: 'pagamentos'
+    default: 'appcontainer'
   - name: ArtifactName
     type: string
     default: 'drop'
@@ -32,12 +32,11 @@ parameters:
       - 'Maven'
 
 variables:
-  imageName: 'koniasample'
-  # System.TeamProject: '$(System.TeamProject)' # Nome do projeto onde esta a pipeline
-  ContentPath: '$(System.DefaultWorkingDirectory)' # Caminho para os arquivos que serão copiados para a pasta do pacote que será gerado.
-  SonarConnection: '' # Nome da Service Connection do Sonaqube
-  SonarProjectKey: '' # ProjectKey do projeto no Sonarqube
-  SonarProjectName: '' # ProjectName do projeto no Sonarqube
+  baseImageName: '${{ parameters.ApiGroup }}-${{ parameters.ApplicationName }}'
+  ContentPath: '$(System.DefaultWorkingDirectory)' 
+  SonarConnection: '' 
+  SonarProjectKey: '' 
+  SonarProjectName: '' 
 
 stages:
   - stage: Build
@@ -56,6 +55,9 @@ stages:
             ApplicationName: ${{ parameters.ApplicationName }}
             ArtifactName: ${{ parameters.ArtifactName }}
 
+  # -----------------------------
+  # Deploy DEV
+  # -----------------------------
   - stage: DeployDev
     displayName: "Deploy to DEV"
     dependsOn: Build
@@ -63,7 +65,7 @@ stages:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
+          imageName: "$(baseImageName)-dev"
           tag: $(Build.BuildId)
           artifactName: 'drop'
 
@@ -71,9 +73,12 @@ stages:
         parameters:
           environmentName: 'DEV'
           imageTag: $(Build.BuildId)
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-dev"
+          imageName: "$(baseImageName)-dev"
           ApiGroup: '${{ parameters.ApiGroup }}'
 
+  # -----------------------------
+  # Deploy QA
+  # -----------------------------
   - stage: DeployQA
     displayName: "Deploy to QA"
     dependsOn: DeployDev
@@ -81,7 +86,7 @@ stages:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+          imageName: "$(baseImageName)-qa"
           tag: $(Build.BuildId)
           artifactName: 'drop'
 
@@ -89,9 +94,12 @@ stages:
         parameters:
           environmentName: 'QA'
           imageTag: $(Build.BuildId)
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-qa"
+          imageName: "$(baseImageName)-qa"
           ApiGroup: '${{ parameters.ApiGroup }}'
 
+  # -----------------------------
+  # Deploy HML
+  # -----------------------------
   - stage: DeployHML
     displayName: "Deploy to HML"
     dependsOn: DeployQA
@@ -99,7 +107,7 @@ stages:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
+          imageName: "$(baseImageName)-hml"
           tag: $(Build.BuildId)
           artifactName: 'drop'
 
@@ -107,9 +115,12 @@ stages:
         parameters:
           environmentName: 'HML'
           imageTag: $(Build.BuildId)
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-hml"
+          imageName: "$(baseImageName)-hml"
           ApiGroup: '${{ parameters.ApiGroup }}'
 
+  # -----------------------------
+  # Deploy PROD
+  # -----------------------------
   - stage: DeployProd
     displayName: "Deploy to PROD"
     dependsOn: DeployHML
@@ -117,7 +128,7 @@ stages:
       - template: docker-build-template.yml@templatesRepo
         parameters:
           registryName: 'acrkoniasamples.azurecr.io'
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
+          imageName: "$(baseImageName)-prd"
           tag: $(Build.BuildId)
           artifactName: 'drop'
 
@@ -125,5 +136,5 @@ stages:
         parameters:
           environmentName: 'PRD'
           imageTag: $(Build.BuildId)
-          imageName: "${{ parameters.ApiGroup }}-$(imageName)-prd"
+          imageName: "$(baseImageName)-prd"
           ApiGroup: '${{ parameters.ApiGroup }}'

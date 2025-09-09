@@ -58,7 +58,7 @@ stages:
 
   - stage: DeployDev
     displayName: "Deploy to DEV"
-    dependsOn: Docker
+    dependsOn: Build
     jobs:
       - template: docker-build-template.yml@templatesRepo
         parameters:

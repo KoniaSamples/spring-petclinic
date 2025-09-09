@@ -56,17 +56,6 @@ stages:
             ApplicationName: ${{ parameters.ApplicationName }}
             ArtifactName: ${{ parameters.ArtifactName }}
 
-  - stage: Docker
-    displayName: "Build Docker Image and Push to ACR"
-    dependsOn: Build
-    jobs:
-      - template: docker-build-template.yml@templatesRepo
-        parameters:
-          registryName: 'acrkoniasamples.azurecr.io'
-          imageName: "$(imageName)"
-          tag: $(Build.BuildId)
-          artifactName: 'drop'
-
   - stage: DeployDev
     displayName: "Deploy to DEV"
     dependsOn: Docker
